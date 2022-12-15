@@ -10,11 +10,20 @@ window.addEventListener("resize", setCanvasSize);
 
 let elementsSize;
 let canvasSize;
+let level = 0;
+let lives = 3;
 
 const playerPosition = {
   x: undefined,
   y: undefined,
 };
+
+const arrivalPosition = {
+  x: undefined,
+  y: undefined,
+};
+
+let gameOverPosition = [];
 
 function setCanvasSize() {
   if (window.innerHeight > window.innerWidth) {
@@ -35,10 +44,21 @@ function startGame() {
   game.font = elementsSize + "px Verdana";
   game.textAlign = "center";
 
-  const map = maps[0];
+  const map = maps[level];
+
+  if (!map) {
+    gameWin();
+    return;
+  }
+
+  function gameWin() {
+    console.log("You won!");
+  }
+
   const mapRows = map.trim().split("\n");
   const mapRCols = mapRows.map((row) => row.trim().split(""));
 
+  gameOverPosition = [];
   game.clearRect(0, 0, canvasSize, canvasSize);
 
   mapRCols.forEach((row, rowIndex) => {
@@ -51,8 +71,15 @@ function startGame() {
         if (!playerPosition.x && !playerPosition.y) {
           playerPosition.x = positionX;
           playerPosition.y = positionY;
-          console.log(playerPosition);
         }
+      } else if (col == "I") {
+        arrivalPosition.x = positionX;
+        arrivalPosition.y = positionY;
+      } else if (col == "X") {
+        gameOverPosition.push({
+          x: positionX,
+          y: positionY,
+        });
       }
 
       game.fillText(emoji, positionX, positionY);
@@ -63,6 +90,44 @@ function startGame() {
 }
 
 function movePlayer() {
+  const arrivalOkX =
+    playerPosition.x.toFixed(3) == arrivalPosition.x.toFixed(3);
+  const arrivalOkY =
+    playerPosition.y.toFixed(3) == arrivalPosition.y.toFixed(3);
+  const arrivalOk = arrivalOkX && arrivalOkY;
+
+  if (arrivalOk) {
+    levelWin();
+  }
+
+  function levelWin() {
+    console.log("Nuevo nivel");
+    level++;
+    startGame();
+  }
+
+  const gameOverOk = gameOverPosition.find((e) => {
+    const gameOverOkX = e.x.toFixed(3) == playerPosition.x.toFixed(3);
+    const gameOverOkY = e.y.toFixed(3) == playerPosition.y.toFixed(3);
+    return gameOverOkX && gameOverOkY;
+  });
+
+  if (gameOverOk) {
+    levelFail();
+  }
+
+  function levelFail() {
+    if (lives <= 1) {
+      level = 0;
+      lives = 3;
+    } 
+
+    lives--;
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
+    startGame();
+  }
+
   game.fillText(emojis["PLAYER"], playerPosition.x, playerPosition.y);
 }
 
@@ -88,7 +153,7 @@ function moveByKeys(param) {
 function moveUp() {
   console.log("UP!");
 
-  if ((playerPosition.y - elementsSize) < 0) {
+  if (playerPosition.y - elementsSize < elementsSize) {
     console.log("OUT");
   } else {
     playerPosition.y -= elementsSize;
@@ -96,21 +161,10 @@ function moveUp() {
   }
 }
 
-function moveDown() {
-  console.log("DOWN!");
-
-  if ((playerPosition.y + elementsSize) > canvasSize) {
-    console.log("OUT");
-  } else {
-    playerPosition.y += elementsSize;
-    startGame();
-  }
-}
-
 function moveLeft() {
   console.log("LEFT!");
 
-  if ((playerPosition.x - elementsSize) < canvasSize) {
+  if (playerPosition.x - elementsSize < elementsSize) {
     console.log("OUT");
   } else {
     playerPosition.x -= elementsSize;
@@ -118,14 +172,24 @@ function moveLeft() {
   }
 }
 
+function moveDown() {
+  console.log("DOWN!");
+
+  if (playerPosition.y + elementsSize > canvasSize) {
+    console.log("OUT");
+  } else {
+    playerPosition.y += elementsSize;
+    startGame();
+  }
+}
+
 function moveRight() {
   console.log("RIGHT!");
 
-  if ((playerPosition.x + elementsSize) > canvasSize) {
+  if (playerPosition.x + elementsSize > canvasSize) {
     console.log("OUT");
   } else {
     playerPosition.x += elementsSize;
     startGame();
   }
-
 }

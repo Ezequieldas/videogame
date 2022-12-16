@@ -44,7 +44,7 @@ button {
   border-color:var(--primary-cream);
   color: #fff;
   font-family:inherit;
-  margin:0;
+  margin-top: 10px;
   padding:5px 20px;
   width:100px;
 }
@@ -61,9 +61,12 @@ button:not(:last-child){
   max-width:460px
 }
 
-p {display:block;
+p, h1 {
+  padding: 10px 0 10px 0;
+  display:block;
   margin:0;
-  width:100%
+  text-align: center;
+  width:100%;
 }
 
 @media(max-width:440px){

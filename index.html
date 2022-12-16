@@ -11,18 +11,28 @@
 <title>Play now!</title>
 </head>
 <body>
+  <header>
+    <h1>PLAY NOW!</h1>
+  </header>
 <div class="game-container">
 <canvas id="game"></canvas>
 <div class="btns">
-<button id="up">Arriba</button>
-<button id="left">Izquierda</button>
-<button id="right">Derecha</button>
-<button id="down">Abajo</button>
+<button id="up">Up</button>
+<button id="left">Left</button>
+<button id="right">Right</button>
+<button id="down">Down</button>
 </div>
-<div class="messages">
 
-<p>Párrafo de ejemplo</p>
+<div class="messages">
+  <p>Lifes: <span id="lives"></span></p>
+  <p>Time: <span id="time"></span></p>
+  <p>Record: <span id="record"></span></p>
+  <p id="result"></p>
+  <p><button id="reset_button">Reiniciar Juego</button></p>
 </div>
+<div>
+</div>
+
 </div>
 <script src="./maps.js"></script>
 <script src="./game.js"></script>
